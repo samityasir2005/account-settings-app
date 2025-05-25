@@ -5,6 +5,7 @@ const {
   login,
   getDashboard,
   logout,
+  deleteAccount,
 } = require("../controllers/authController");
 const auth = require("../middleware/auth");
 
@@ -40,5 +41,6 @@ router.post("/register", registerValidation, register);
 router.post("/login", loginValidation, login);
 router.get("/dashboard", auth, getDashboard);
 router.post("/logout", auth, logout);
+router.delete("/delete-account", auth, deleteAccount); // Add this route
 
 module.exports = router;

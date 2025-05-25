@@ -167,10 +167,37 @@ const logout = async (req, res) => {
     });
   }
 };
+const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Find and delete the user
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({
+        success: false,
+        msg: "User not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      msg: "Account deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete account error:", error.message);
+    res.status(500).json({
+      success: false,
+      msg: "Server error during account deletion",
+    });
+  }
+};
 
 module.exports = {
   register,
   login,
   getDashboard,
   logout,
+  deleteAccount,
 };
