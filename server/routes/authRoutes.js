@@ -4,9 +4,9 @@ const {
   register,
   login,
   getDashboard,
-  logout,
+  updateProfile, // Make sure this is imported
   deleteAccount,
-  updateProfile, // Add this import
+  logout,
 } = require("../controllers/authController");
 const auth = require("../middleware/auth");
 
@@ -50,8 +50,8 @@ const updateProfileValidation = [
 router.post("/register", registerValidation, register);
 router.post("/login", loginValidation, login);
 router.get("/dashboard", auth, getDashboard);
-router.post("/logout", auth, logout);
+router.put("/update-profile", auth, updateProfileValidation, updateProfile); // Make sure this line is correct
 router.delete("/delete-account", auth, deleteAccount);
-router.put("/update-profile", auth, updateProfileValidation, updateProfile); // Add this route
+router.post("/logout", auth, logout);
 
 module.exports = router;

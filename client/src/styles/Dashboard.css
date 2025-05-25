@@ -29,19 +29,19 @@
 }
 
 .logout-link {
-  background: linear-gradient(135deg, #8a2be2 0%, #9748e1 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
   color: white;
   text-decoration: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-weight: 600;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(76, 10, 218, 0.3);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
 .logout-link:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(99, 9, 201, 0.4);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
   color: white;
 }
 
@@ -100,15 +100,47 @@
   color: #cbd5e1;
   font-size: 1.1rem;
   margin: 0.75rem 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 .user-details strong {
   color: #e2e8f0;
   font-weight: 600;
   min-width: 80px;
+  display: inline-block;
+}
+
+/* Detail Row for Name with Edit Button */
+.detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0.75rem 0;
+}
+
+.detail-row p {
+  margin: 0;
+  flex: 1;
+}
+
+/* Edit Name Button */
+.edit-name-btn {
+  background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
+  margin-left: 1rem;
+}
+
+.edit-name-btn:hover {
+  background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
 }
 
 /* Account Actions */
@@ -210,13 +242,18 @@
   }
 
   .user-details p {
-    flex-direction: column;
-    text-align: center;
-    gap: 0.25rem;
+    font-size: 1rem;
   }
 
-  .user-details strong {
-    min-width: auto;
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .edit-name-btn {
+    margin-left: 0;
+    align-self: flex-start;
   }
 
   .user-info {
@@ -263,6 +300,11 @@
   .delete-account-btn {
     padding: 0.75rem 1.5rem;
     font-size: 0.9rem;
+  }
+
+  .edit-name-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
   }
 }
 

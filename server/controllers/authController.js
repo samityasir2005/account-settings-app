@@ -14,7 +14,6 @@ const generateToken = (userId) => {
 // @access  Public
 const register = async (req, res) => {
   try {
-    // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -26,7 +25,6 @@ const register = async (req, res) => {
 
     const { name, email, password } = req.body;
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
@@ -35,7 +33,6 @@ const register = async (req, res) => {
       });
     }
 
-    // Create new user
     const user = new User({
       name,
       email,
@@ -44,7 +41,6 @@ const register = async (req, res) => {
 
     await user.save();
 
-    // Generate token
     const token = generateToken(user._id);
 
     res.status(201).json({
@@ -71,7 +67,6 @@ const register = async (req, res) => {
 // @access  Public
 const login = async (req, res) => {
   try {
-    // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -83,7 +78,6 @@ const login = async (req, res) => {
 
     const { email, password } = req.body;
 
-    // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
@@ -92,7 +86,6 @@ const login = async (req, res) => {
       });
     }
 
-    // Check password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(400).json({
@@ -101,7 +94,6 @@ const login = async (req, res) => {
       });
     }
 
-    // Generate token
     const token = generateToken(user._id);
 
     res.json({
@@ -148,55 +140,11 @@ const getDashboard = async (req, res) => {
   }
 };
 
-// @desc    Logout user
-// @route   POST /api/v1/logout
+// @desc    Update user profile
+// @route   PUT /api/v1/update-profile
 // @access  Private
-const logout = async (req, res) => {
-  try {
-    // Since we're using JWT tokens, logout is handled on the frontend
-    // by removing the token from localStorage
-    res.json({
-      success: true,
-      msg: "Logged out successfully",
-    });
-  } catch (error) {
-    console.error("Logout error:", error.message);
-    res.status(500).json({
-      success: false,
-      msg: "Server error during logout",
-    });
-  }
-};
-const deleteAccount = async (req, res) => {
-  try {
-    const userId = req.user.id;
-
-    // Find and delete the user
-    const deletedUser = await User.findByIdAndDelete(userId);
-
-    if (!deletedUser) {
-      return res.status(404).json({
-        success: false,
-        msg: "User not found",
-      });
-    }
-
-    res.json({
-      success: true,
-      msg: "Account deleted successfully",
-    });
-  } catch (error) {
-    console.error("Delete account error:", error.message);
-    res.status(500).json({
-      success: false,
-      msg: "Server error during account deletion",
-    });
-  }
-};
-
 const updateProfile = async (req, res) => {
   try {
-    // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -209,7 +157,6 @@ const updateProfile = async (req, res) => {
     const { name } = req.body;
     const userId = req.user.id;
 
-    // Update user
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { name },
@@ -241,10 +188,59 @@ const updateProfile = async (req, res) => {
   }
 };
 
+// @desc    Delete user account
+// @route   DELETE /api/v1/delete-account
+// @access  Private
+const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({
+        success: false,
+        msg: "User not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      msg: "Account deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete account error:", error.message);
+    res.status(500).json({
+      success: false,
+      msg: "Server error during account deletion",
+    });
+  }
+};
+
+// @desc    Logout user
+// @route   POST /api/v1/logout
+// @access  Private
+const logout = async (req, res) => {
+  try {
+    res.json({
+      success: true,
+      msg: "Logged out successfully",
+    });
+  } catch (error) {
+    console.error("Logout error:", error.message);
+    res.status(500).json({
+      success: false,
+      msg: "Server error during logout",
+    });
+  }
+};
+
+// IMPORTANT: Make sure all functions are exported
 module.exports = {
   register,
   login,
   getDashboard,
-  logout,
+  updateProfile, // Make sure this is included
   deleteAccount,
+  logout,
 };

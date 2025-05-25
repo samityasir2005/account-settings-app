@@ -5,13 +5,16 @@ import { toast } from "react-toastify";
 import { UserContext } from "../usercontext/UserContext";
 import defaultProfilePic from "../assets/profile-pictures/default.jpg";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
+import EditNameModal from "../components/EditNameModal";
 import axios from "axios";
 
 const Dashboard = () => {
   const { user, token, setUser, setToken } = useContext(UserContext);
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [editLoading, setEditLoading] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -34,21 +37,15 @@ const Dashboard = () => {
       );
 
       if (response.data.success) {
-        // Clear user data and token
         localStorage.removeItem("auth");
         setUser(null);
         setToken("");
-
-        // Close modal
         setShowDeleteModal(false);
-
-        // Show success message and redirect
         toast.success("Account deleted successfully");
         navigate("/");
       }
     } catch (error) {
       console.error("Delete account error:", error);
-
       if (error.response && error.response.data) {
         toast.error(error.response.data.msg || "Failed to delete account");
       } else {
@@ -59,6 +56,42 @@ const Dashboard = () => {
     }
   };
 
+  const handleUpdateName = async (newName) => {
+    setEditLoading(true);
+
+    try {
+      const response = await axios.put(
+        "http://localhost:3000/api/v1/update-profile",
+        { name: newName },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        setUser(response.data.user);
+        setShowEditModal(false);
+        toast.success("Name updated successfully");
+      }
+    } catch (error) {
+      console.error("Update name error:", error);
+      if (error.response && error.response.data) {
+        if (error.response.data.errors) {
+          const errorMsg = error.response.data.errors[0].msg;
+          toast.error(errorMsg);
+        } else {
+          toast.error(error.response.data.msg || "Failed to update name");
+        }
+      } else {
+        toast.error("An error occurred while updating name");
+      }
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
   const openDeleteModal = () => {
     setShowDeleteModal(true);
   };
@@ -66,6 +99,16 @@ const Dashboard = () => {
   const closeDeleteModal = () => {
     if (!deleteLoading) {
       setShowDeleteModal(false);
+    }
+  };
+
+  const openEditModal = () => {
+    setShowEditModal(true);
+  };
+
+  const closeEditModal = () => {
+    if (!editLoading) {
+      setShowEditModal(false);
     }
   };
 
@@ -89,9 +132,14 @@ const Dashboard = () => {
               />
               <div className="user-details">
                 <h2>User Information</h2>
-                <p>
-                  <strong>Name:</strong> {user.name}
-                </p>
+                <div className="detail-row">
+                  <p>
+                    <strong>Name:</strong> {user.name}
+                  </p>
+                  <button className="edit-name-btn" onClick={openEditModal}>
+                    ✏️ Edit
+                  </button>
+                </div>
                 <p>
                   <strong>Email:</strong> {user.email}
                 </p>
@@ -101,7 +149,6 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Add delete account section with minimal styling */}
             <div className="account-actions">
               <button className="delete-account-btn" onClick={openDeleteModal}>
                 Delete Account
@@ -120,6 +167,14 @@ const Dashboard = () => {
         onClose={closeDeleteModal}
         onConfirm={handleDeleteAccount}
         loading={deleteLoading}
+      />
+
+      <EditNameModal
+        isOpen={showEditModal}
+        onClose={closeEditModal}
+        onSubmit={handleUpdateName}
+        currentName={user?.name}
+        loading={editLoading}
       />
     </div>
   );
