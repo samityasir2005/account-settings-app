@@ -13,7 +13,7 @@ const Logout = () => {
       setTimeLeft((prevTime) => {
         if (prevTime <= 1) {
           clearInterval(interval);
-          navigate("/");
+          navigate("/login");
           window.location.reload();
           return 0;
         }

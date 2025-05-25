@@ -1,13 +1,15 @@
 import React from "react";
 import "../styles/Landing.css";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import backgroundImage from "../assets/back.jpg";
 const Landing = () => {
+  const navigate = useNavigate();
+
   const handleGetStarted = () => {
     console.log("Get Started with HoneyBadger clicked!");
-    // Add your navigation logic here
+    navigate("/login");
   };
-
   return (
     <div
       className="landing-page"
