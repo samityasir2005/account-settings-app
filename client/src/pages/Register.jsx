@@ -17,21 +17,19 @@ const Register = () => {
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     let name = e.target.name.value;
-    let lastname = e.target.lastname.value;
     let email = e.target.email.value;
     let password = e.target.password.value;
     let confirmPassword = e.target.confirmPassword.value;
 
     if (
       name.length > 0 &&
-      lastname.length > 0 &&
       email.length > 0 &&
       password.length > 0 &&
       confirmPassword.length > 0
     ) {
       if (password === confirmPassword) {
         const formData = {
-          username: name + " " + lastname,
+          name: name,
           email,
           password,
         };
@@ -104,16 +102,7 @@ const Register = () => {
               <input
                 type="text"
                 name="name"
-                placeholder="First Name"
-                className="form-input"
-                required
-              />
-            </div>
-            <div className="input-group half-width">
-              <input
-                type="text"
-                name="lastname"
-                placeholder="Last Name"
+                placeholder="Username"
                 className="form-input"
                 required
               />
