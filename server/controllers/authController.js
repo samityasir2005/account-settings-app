@@ -194,6 +194,53 @@ const deleteAccount = async (req, res) => {
   }
 };
 
+const updateProfile = async (req, res) => {
+  try {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        msg: "Validation failed",
+        errors: errors.array(),
+      });
+    }
+
+    const { name } = req.body;
+    const userId = req.user.id;
+
+    // Update user
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { name },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        msg: "User not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      msg: "Profile updated successfully",
+      user: {
+        id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+      },
+    });
+  } catch (error) {
+    console.error("Update profile error:", error.message);
+    res.status(500).json({
+      success: false,
+      msg: "Server error during profile update",
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
